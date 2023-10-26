@@ -1,6 +1,7 @@
 from blocks import Blockchain
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 description = """
 Blockchain Simulation API helps you do awesome stuff. 🚀
@@ -34,6 +35,16 @@ app = FastAPI(
     },
 )
 
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 blockchain = Blockchain()
 
 @app.get("/")
@@ -46,13 +57,20 @@ def mine_block():
     previous_proof = previous_block['proof']
     proof = blockchain.proof_of_work(previous_proof)
     previous_hash = blockchain.hash(previous_block)
-    block = blockchain.create_block(proof, previous_hash)
+    block = blockchain.create_block(proof, previous_hash, 'Block Mined')
  
-    response = {'message': 'A block is MINED',
-                'index': block['index'],
-                'timestamp': block['timestamp'],
-                'proof': block['proof'],
-                'previous_hash': block['previous_hash']}
+    response = {
+        'message': 'A block is MINED',
+        'block': {
+            'index': block['index'],
+            'timestamp': block['timestamp'],
+            'data': block['data'],
+            'proof': block['proof'],
+            'previous_hash': block['previous_hash']
+        },
+        'chain': blockchain.chain,
+        'length': len(blockchain.chain)
+    }
  
     return JSONResponse(response, 200)
  
