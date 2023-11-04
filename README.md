@@ -1,5 +1,8 @@
 # blockchain-implementation-from-scratch-backend
-Blockchain working simulated using Python 
+Blockchain working simulated using Python.
+
+This is backend.<br>
+Frontend: https://github.com/NotShrirang/blockchain-implementation-from-scratch-frontend
 
 ## Clone the repo:
 ```
